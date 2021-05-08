@@ -1,4 +1,7 @@
 import { songsList } from "../data/songs.js";
+import PlayInfo from "./play-info.js"
+import TrackBar from "./track-bar.js";
+
 
 const Playlist = (() => {
   // data or state
@@ -12,7 +15,16 @@ const Playlist = (() => {
   const init = () => {
     render();
     listeners();
+    PlayInfo.setState({
+        songsLength: songs.length,
+        isPlaying: !currentSong.paused
+    })
   };
+
+  const flip = () => {
+        togglePlayPause()
+        render();
+  }
 
 
   const changeAudioSrc = () => {
@@ -35,6 +47,11 @@ const Playlist = (() => {
         changeAudioSrc()
         togglePlayPause();
       }
+
+      PlayInfo.setState({
+        songsLength: songs.length,
+        isPlaying: !currentSong.paused
+    })
   }
 
   const playNext = () => {
@@ -67,10 +84,14 @@ const Playlist = (() => {
             }
         })
 
+        currentSong.addEventListener('timeupdate', () => {
+                TrackBar.setState(currentSong);
+        });
+
         currentSong.addEventListener('ended', () => {
              //playnext
              playNext()
-        })
+        });
 
   }
 
@@ -108,6 +129,7 @@ const Playlist = (() => {
 
   return {
     init,
+    flip
   };
 })();
 
